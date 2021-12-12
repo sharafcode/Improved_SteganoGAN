@@ -9,7 +9,7 @@ import imageio
 import torch
 from imageio import imread, imwrite
 from torch.nn.functional import binary_cross_entropy_with_logits, mse_loss
-from torch.optim import Adam
+from torch.optim import Adam,SGD
 from tqdm import tqdm
 
 from steganogan.utils import bits_to_bytearray, bytearray_to_text, ssim, text_to_bits
@@ -135,7 +135,8 @@ class SteganoGAN(object):
 
     def _get_optimizers(self):
         _dec_list = list(self.decoder.parameters()) + list(self.encoder.parameters())
-        critic_optimizer = Adam(self.critic.parameters(), lr=1e-4)
+        critic_optimizer =SGD(self.critic.parameters(), lr=1e-4, momentum=0.4)
+        #critic_optimizer = Adam(self.critic.parameters(), lr=1e-4)
         decoder_optimizer = Adam(_dec_list, lr=1e-4)
 
         return critic_optimizer, decoder_optimizer
